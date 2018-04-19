@@ -1,7 +1,7 @@
 
 objs = main.obj
 
-nuke.efi : $(objs)
+hello.efi : $(objs)
 	./link.sh $(objs)
 
 main.obj : main.c

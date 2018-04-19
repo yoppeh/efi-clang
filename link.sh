@@ -1,4 +1,4 @@
-lld-link -subsystem:console -nodefaultlib -dll -entry:efi_main $@ -out:nukeld.dll
-petoefi nukeld.dll nukeld.efi app
-rm nukeld.dll
-rm nukeld.lib
+lld-link -subsystem:console -nodefaultlib -dll -entry:efi_main $@ -out:hello.dll
+petoefi hello.dll hello.efi app
+rm hello.dll
+rm hello.lib
