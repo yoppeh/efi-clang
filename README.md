@@ -13,7 +13,9 @@ Then reboot, choose the shell option from the boot menu and then do:
 `cd app`
 
 `hello-c.efi`
+
 `hello-fasm.efi`
+
 `memmap.efi`
 
 If you built a similar application using *gnu-efi*, you'll notice this executable is substantially smaller.
