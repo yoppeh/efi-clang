@@ -1,10 +1,22 @@
 
-objs = main.obj
+all : hello-c.efi hello-fasm.efi memmap.efi
 
-hello.efi : $(objs)
-	./link.sh $(objs)
+hello-fasm.efi : hello-fasm.obj
+	./link.sh $@ hello-fasm.obj
 
-main.obj : main.c
+hello-c.efi : hello-c.obj
+	./link.sh $@ hello-c.obj
+
+memmap.efi : memmap.obj
+	./link.sh $@ memmap.obj
+
+hello-fasm.obj : hello-fasm.asm
+	fasm $<
+
+hello-c.obj : hello-c.c
+	clang -I efi -target x86_64-pc-win32-coff -fno-stack-protector -fshort-wchar -mno-red-zone -DHAVE_USE_MS_ABI -c $< -o $@
+
+memmap.obj : memmap.c
 	clang -I efi -target x86_64-pc-win32-coff -fno-stack-protector -fshort-wchar -mno-red-zone -DHAVE_USE_MS_ABI -c $< -o $@
 
 .PHONY : clean
