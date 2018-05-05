@@ -1,23 +1,28 @@
 
+cc = clang
+cflags = -I efi -target x86_64-pc-win32-coff -fno-stack-protector -fshort-wchar -mno-red-zone
+ld = lld-link
+lflags = -subsystem:efi_application -nodefaultlib -dll
+
 all : hello-c.efi hello-fasm.efi memmap.efi
 
 hello-fasm.efi : hello-fasm.obj
-	lld-link -subsystem:efi_application -nodefaultlib -dll -entry:efi_main $< -out:$@
+	$(ld) $(lflags) -entry:efi_main $< -out:$@
 
 hello-c.efi : hello-c.obj
-	lld-link -subsystem:efi_application -nodefaultlib -dll -entry:efi_main $< -out:$@
+	$(ld) $(lflags) -entry:efi_main $< -out:$@
 
 memmap.efi : memmap.obj
-	lld-link -subsystem:efi_application -nodefaultlib -dll -entry:efi_main $< -out:$@
+	$(ld) $(lflags) -entry:efi_main $< -out:$@
 
 hello-fasm.obj : hello-fasm.asm
 	fasm $<
 
 hello-c.obj : hello-c.c
-	clang -I efi -target x86_64-pc-win32-coff -fno-stack-protector -fshort-wchar -mno-red-zone -DHAVE_USE_MS_ABI -c $< -o $@
+	$(cc) $(cflags) -c $< -o $@
 
 memmap.obj : memmap.c
-	clang -I efi -target x86_64-pc-win32-coff -fno-stack-protector -fshort-wchar -mno-red-zone -DHAVE_USE_MS_ABI -c $< -o $@
+	$(cc) $(cflags) -c $< -o $@
 
 .PHONY : clean
 clean:

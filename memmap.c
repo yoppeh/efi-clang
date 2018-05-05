@@ -23,6 +23,8 @@ CHAR16 *console_str_crlf = (CHAR16 *)L"\r\n";
 
 static CHAR16 *_tab_str = (CHAR16 *)L"    ";
 
+static CHAR16 *_header_str = (CHAR16 *)L"physical address     virtual address      pages                type";
+
 
 static CHAR16 _hex_table[] = {
     L'0', L'1', L'2', L'3', L'4', L'5', L'6', L'7', 
@@ -140,6 +142,7 @@ static void dump_uefi_map(void)
     uint64_t                total_mapped = 0;
 
     _mem_map_num_entries = _mem_map_size / _mem_map_desc_size;
+    console_println(_header_str);
     for (i = 0; i < _mem_map_num_entries; i++) {
         mem_map = (EFI_MEMORY_DESCRIPTOR *)mm;
         console_print_hex(mem_map->PhysicalStart, 16);
