@@ -8,12 +8,12 @@
 
 
 #define CONSOLE_STR_BUFFER_MAX  128
-#define NULL    (void *)0
+#define NULL                    (void *)0
 
 
 UINTN               memory_map_key;
-EFI_HANDLE          main_image_handle;
-EFI_SYSTEM_TABLE    *main_system_table;
+EFI_HANDLE          image_handle;
+EFI_SYSTEM_TABLE    *system_table;
 
 CHAR16 *console_str_yes = (CHAR16 *)L"yes";
 CHAR16 *console_str_no = (CHAR16 *)L"no";
@@ -61,19 +61,19 @@ static void console_print(CHAR16 * s);
 static void console_println(CHAR16 * s);
 static void console_print_dec(uint64_t dec);
 static void console_print_hex(uint64_t hex, uint8_t width);
-static void memory_dump_uefi_map(void);
-static int memory_init(void);
+static void dump_uefi_map(void);
+static int init_memory(void);
 
 
 EFI_STATUS efi_main(EFI_HANDLE ih, EFI_SYSTEM_TABLE *st) 
 {
-    main_image_handle = ih;
-    main_system_table = st;
+    image_handle = ih;
+    system_table = st;
 
-    if (memory_init()) {
+    if (init_memory()) {
         return(EFI_ERR);
     }
-    memory_dump_uefi_map();
+    dump_uefi_map();
 
     return(EFI_SUCCESS);
 }
@@ -81,14 +81,14 @@ EFI_STATUS efi_main(EFI_HANDLE ih, EFI_SYSTEM_TABLE *st)
 
 static void console_print(CHAR16 * s) 
 {
-    main_system_table->ConOut->OutputString(main_system_table->ConOut, s);
+    system_table->ConOut->OutputString(system_table->ConOut, s);
 }
 
 
 static void console_println(CHAR16 * s)
 {
-    main_system_table->ConOut->OutputString(main_system_table->ConOut, s);
-    main_system_table->ConOut->OutputString(main_system_table->ConOut, 
+    system_table->ConOut->OutputString(system_table->ConOut, s);
+    system_table->ConOut->OutputString(system_table->ConOut, 
             console_str_crlf);
 }
 
@@ -132,7 +132,7 @@ static void console_print_hex(uint64_t hex, uint8_t width)
 }
 
 
-static void memory_dump_uefi_map(void) 
+static void dump_uefi_map(void) 
 {
     void                    *mm = _mem_map;
     EFI_MEMORY_DESCRIPTOR   *mem_map;
@@ -162,11 +162,11 @@ static void memory_dump_uefi_map(void)
 }
 
 
-static int memory_init(void) 
+static int init_memory(void) 
 {
     UINTN   map_size;
 
-    if (main_system_table->BootServices->GetMemoryMap(&_mem_map_size, NULL, 
+    if (system_table->BootServices->GetMemoryMap(&_mem_map_size, NULL, 
             &memory_map_key, &_mem_map_desc_size, 
             &_mem_map_desc_ver) != EFI_BUFFER_TOO_SMALL) {
         console_println((CHAR16 *)L"error getting system memory map");
@@ -176,7 +176,7 @@ static int memory_init(void)
     map_size = (_mem_map_size + 4095) / 4096;
     _mem_map_alloced_pages = map_size;
     _mem_map_size = map_size * 4096;
-    if (main_system_table->BootServices->AllocatePages(AllocateAnyPages, 
+    if (system_table->BootServices->AllocatePages(AllocateAnyPages, 
             EfiLoaderData, map_size, 
             (EFI_PHYSICAL_ADDRESS *)&_mem_map) != EFI_SUCCESS) {
         console_print((CHAR16 *)L"error allocating ");
@@ -187,7 +187,7 @@ static int memory_init(void)
 
     /* Finally, get the memory map for real. It will be stored in the memory
      * area we allocated above and pointed to by _mem_map. */
-    if (main_system_table->BootServices->GetMemoryMap(&_mem_map_size,
+    if (system_table->BootServices->GetMemoryMap(&_mem_map_size,
             _mem_map, &memory_map_key, &_mem_map_desc_size,
             &_mem_map_desc_ver) != EFI_SUCCESS) {
         console_println((CHAR16 *)L"failed to get system memory map");
