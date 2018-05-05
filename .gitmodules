@@ -1,0 +1,3 @@
+[submodule "efi"]
+	path = efi
+	url = git@github.com:yoppeh/efi.git
