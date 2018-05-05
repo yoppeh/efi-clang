@@ -2,13 +2,13 @@
 all : hello-c.efi hello-fasm.efi memmap.efi
 
 hello-fasm.efi : hello-fasm.obj
-	./link.sh $@ hello-fasm.obj
+	lld-link -subsystem:efi_application -nodefaultlib -dll -entry:efi_main $< -out:$@
 
 hello-c.efi : hello-c.obj
-	./link.sh $@ hello-c.obj
+	lld-link -subsystem:efi_application -nodefaultlib -dll -entry:efi_main $< -out:$@
 
 memmap.efi : memmap.obj
-	./link.sh $@ memmap.obj
+	lld-link -subsystem:efi_application -nodefaultlib -dll -entry:efi_main $< -out:$@
 
 hello-fasm.obj : hello-fasm.asm
 	fasm $<
