@@ -5,7 +5,7 @@
 EFI_HANDLE          image_handle;
 EFI_SYSTEM_TABLE    *system_table;
 
-CHAR16              *hello_str = (CHAR16 *)L"Hello, you slab of warm meat!\r\n";
+CHAR16              *hello_str = L"Hello, you slab of warm meat!\r\n";
 
 
 EFI_STATUS efi_main(EFI_HANDLE ih, EFI_SYSTEM_TABLE *st) 
