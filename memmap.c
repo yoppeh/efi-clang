@@ -15,15 +15,15 @@ UINTN               memory_map_key;
 EFI_HANDLE          image_handle;
 EFI_SYSTEM_TABLE    *system_table;
 
-CHAR16 *console_str_yes = (CHAR16 *)L"yes";
-CHAR16 *console_str_no = (CHAR16 *)L"no";
-CHAR16 *console_str_valid = (CHAR16 *)L"valid";
-CHAR16 *console_str_invalid = (CHAR16 *)L"invalid";
-CHAR16 *console_str_crlf = (CHAR16 *)L"\r\n";
+CHAR16 *console_str_yes = L"yes";
+CHAR16 *console_str_no = L"no";
+CHAR16 *console_str_valid = L"valid";
+CHAR16 *console_str_invalid = L"invalid";
+CHAR16 *console_str_crlf = L"\r\n";
 
-static CHAR16 *_tab_str = (CHAR16 *)L"    ";
+static CHAR16 *_tab_str = L"    ";
 
-static CHAR16 *_header_str = (CHAR16 *)L"physical address     virtual address      pages                type";
+static CHAR16 *_header_str = L"physical address     virtual address      pages                type";
 
 
 static CHAR16 _hex_table[] = {
@@ -32,24 +32,24 @@ static CHAR16 _hex_table[] = {
 };
 
 static CHAR16 *_mem_attribute[] = {
-    (CHAR16 *)L"reserved",
-    (CHAR16 *)L"loader code",
-    (CHAR16 *)L"loader data",
-    (CHAR16 *)L"boot services code",
-    (CHAR16 *)L"boot services data",
-    (CHAR16 *)L"runtime services code",
-    (CHAR16 *)L"runtime services data",
-    (CHAR16 *)L"conventional memory",
-    (CHAR16 *)L"unusable memory",
-    (CHAR16 *)L"acpi reclaim memory",
-    (CHAR16 *)L"acpi memory nvs",
-    (CHAR16 *)L"memory mapped io",
-    (CHAR16 *)L"memory mapped io port space",
-    (CHAR16 *)L"pal code",
-    (CHAR16 *)L"persistent memory"
+    L"reserved",
+    L"loader code",
+    L"loader data",
+    L"boot services code",
+    L"boot services data",
+    L"runtime services code",
+    L"runtime services data",
+    L"conventional memory",
+    L"unusable memory",
+    L"acpi reclaim memory",
+    L"acpi memory nvs",
+    L"memory mapped io",
+    L"memory mapped io port space",
+    L"pal code",
+    L"persistent memory"
 };
 
-static CHAR16 *_mem_attribute_unrecognized = (CHAR16 *)L"unrecognized";
+static CHAR16 *_mem_attribute_unrecognized = L"unrecognized";
 
 static EFI_MEMORY_DESCRIPTOR    *_mem_map = NULL;
 static UINTN                    _mem_map_size = 0;
@@ -103,7 +103,7 @@ static void console_print_dec(uint64_t dec)
     buffer[i--] = 0x0000;
 
     do {
-        buffer[i--] = (CHAR16)L'0' + dec % 10;
+        buffer[i--] = L'0' + dec % 10;
         dec /= 10;
     } while (dec > 0 && i >= 0);
     i++;
@@ -159,7 +159,7 @@ static void dump_uefi_map(void)
         total_mapped += mem_map->NumberOfPages * 4096;
         mm += _mem_map_desc_size;
     }
-    console_print((CHAR16 *)L"Total memory mapped ... ");
+    console_print(L"Total memory mapped ... ");
     console_print_dec(total_mapped);
     console_print(console_str_crlf);
 }
@@ -172,7 +172,7 @@ static int init_memory(void)
     if (system_table->BootServices->GetMemoryMap(&_mem_map_size, NULL, 
             &memory_map_key, &_mem_map_desc_size, 
             &_mem_map_desc_ver) != EFI_BUFFER_TOO_SMALL) {
-        console_println((CHAR16 *)L"error getting system memory map");
+        console_println(L"error getting system memory map");
         return 1;
     }
 
@@ -182,9 +182,9 @@ static int init_memory(void)
     if (system_table->BootServices->AllocatePages(AllocateAnyPages, 
             EfiLoaderData, map_size, 
             (EFI_PHYSICAL_ADDRESS *)&_mem_map) != EFI_SUCCESS) {
-        console_print((CHAR16 *)L"error allocating ");
+        console_print(L"error allocating ");
         console_print_dec(_mem_map_size);
-        console_println((CHAR16 *)L" pages for GetMemoryMap");
+        console_println(L" pages for GetMemoryMap");
         return 1;
     }
 
@@ -193,7 +193,7 @@ static int init_memory(void)
     if (system_table->BootServices->GetMemoryMap(&_mem_map_size,
             _mem_map, &memory_map_key, &_mem_map_desc_size,
             &_mem_map_desc_ver) != EFI_SUCCESS) {
-        console_println((CHAR16 *)L"failed to get system memory map");
+        console_println(L"failed to get system memory map");
         return 1;
     }
 
