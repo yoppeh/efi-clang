@@ -4,7 +4,7 @@ cflags = -I efi -target x86_64-pc-win32-coff -fno-stack-protector -fshort-wchar 
 ld = lld-link
 lflags = -subsystem:efi_application -nodefaultlib -dll
 
-all : hello-c.efi hello-fasm.efi memmap.efi
+all : hello-c.efi memmap.efi hello-fasm.efi
 
 hello-fasm.efi : hello-fasm.obj
 	$(ld) $(lflags) -entry:efi_main $< -out:$@
