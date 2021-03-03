@@ -59,8 +59,8 @@ static uint64_t                 _mem_map_alloced_pages = 0;
 static UINT32                   _mem_map_desc_ver = 0;
 
 
-static void console_print(CHAR16 * s);
-static void console_println(CHAR16 * s);
+static void console_print(CHAR16 *s);
+static void console_println(CHAR16 *s);
 static void console_print_dec(uint64_t dec);
 static void console_print_hex(uint64_t hex, uint8_t width);
 static void dump_uefi_map(void);
@@ -81,13 +81,13 @@ EFI_STATUS efi_main(EFI_HANDLE ih, EFI_SYSTEM_TABLE *st)
 }
 
 
-static void console_print(CHAR16 * s) 
+static void console_print(CHAR16 *s) 
 {
     system_table->ConOut->OutputString(system_table->ConOut, s);
 }
 
 
-static void console_println(CHAR16 * s)
+static void console_println(CHAR16 *s)
 {
     system_table->ConOut->OutputString(system_table->ConOut, s);
     system_table->ConOut->OutputString(system_table->ConOut, 
