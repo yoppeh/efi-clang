@@ -1,6 +1,6 @@
 # efi-clang
 
-Build UEFI applications with the Clang compiler and LLD linker. Of course, you'll need to have those installed. I tested this with Clang v. 6.0.0. I use Arch Linux, so I installed `pacman -S clang lld`. This uses my [efi library](https://github.com/yoppeh/efi), included as a submodule. After cloning this repo, you'd do: `git submodule update --init` to pull it in.
+Build UEFI applications with the Clang compiler and LLD linker. Of course, you'll need to have those installed. I tested this with Clang v. 6.0.0. I use Arch Linux, so I installed `pacman -S clang lld`. This uses my [efi headers](https://github.com/yoppeh/efi), included as a submodule. After cloning this repo, you'd do: `git submodule update --init` to pull it in.
 
 Next, gather the topology of your EFI setup. When I partitioned my drive, I made a couple of Linux partitions and then one EFI system partition. It was formatted with fat32 and I installed systemd-boot (a poor choice). I made an arch directory for the Arch Linux kernel and an app directory that contains shellx64_v2.efi (The EFI shell you can get from [Tianocore](https://github.com/tianocore/tianocore.github.io/wiki/Efi-shell)). I setup systemd-boot's menu so I could either load Linux or the EFI shell at bootup.
 
@@ -34,7 +34,7 @@ Disillusioned with Tianocore's messy build environment, I decided to hold my nos
 
 I decided I'd go with my own UEFI build environment using [Clang](https://clang.llvm.org/) and [LLD](https://lld.llvm.org/) as the compiler and linker and using my own code instead of Tianocore or gnu-efi project libraries and headers. As it turns out, I had to do considerable research before I could put all the bits together to make it work.
 
-The first thing you need is a set of header files. I built my own, using the spec. I had a creepy feeling Tianocore and GNU would use their own versions of what a header should be, and I preferred to use something custom. My application would have no startup code or link-libraries. Everything used would be defined in the project itself and linked in if it's used and rejected if not.
+The first thing you need is a set of header files. I built my own, using the spec. I had a creeping feeling Tianocore and GNU would use their own versions of what a header should be, and I preferred to use something custom. My application would have no startup code or link-libraries. Everything used would be defined in the project itself and linked in if it's used and rejected if not.
 
 Next, I installed the build tools themselves: clang and lld. It was an easy install on Arch Linux and I had everything up and going without incident. Then it got hard. Clang had to produce Microsoft object files to be compatible with the way UEFI does things. I had to search down the options and fiddle with them until I got them working properly. LLVM itself has to be called as though it were Microsoft's LINK. Once I got everything together, I captured it here, in git where others could use it. Take special care to examine the clang and lld commands in the makefile.
 
