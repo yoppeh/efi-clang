@@ -73,7 +73,7 @@ EFI_STATUS efi_main(EFI_HANDLE ih, EFI_SYSTEM_TABLE *st)
     system_table = st;
 
     if (init_memory()) {
-        return(EFI_ERR);
+        return(1);
     }
     dump_uefi_map();
 
